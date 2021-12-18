@@ -1,25 +1,29 @@
-import logo from './logo.svg';
 import './App.css';
+import Main from "./Main";
+import CheckArea from "./CheckArea";
+import React from 'react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class App extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            page: 'main'
+        }
+    }
+
+    render() {
+        return (
+            <div className="App">
+                <header className="App-header">
+                    {
+                        this.state.page === 'main'
+                            ? <Main goToCheckAreaPage={() => this.setState({ page: 'checkArea' })}/>
+                            : <CheckArea goToMainPage={() => this.setState({ page: 'main' })}/>
+                    }
+
+                </header>
+            </div>
+        );
+    }
 }
-
-export default App;
