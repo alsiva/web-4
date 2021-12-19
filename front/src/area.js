@@ -3,13 +3,21 @@ import React from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 
-const hits = [
-    {x: 1, y: 1, r: 2, doesHit: true},
-    {x: 0, y: 0, r: 2, doesHit: true},
-    {x: -1, y: -0.5, r: 2, doesHit: false},
-    {x: 0, y: 0, r: 1.5, doesHit: true},
-]
+function addHit(x, y, r) {
+    return new Promise(resolve => {
+        function success() {
+            resolve({ code: 200, body: { doesHit: true } })
+        }
+
+        function failure() {
+            resolve({ code: 400, body: { field: 'r', message: 'radius can\'t be negative'}})
+        }
+
+        setTimeout(r < 0 ? failure : success, 1000)
+    })
+}
 
 function toAutocompleteValue(value) {
     return { label: value.toString(), id: value }
@@ -26,6 +34,14 @@ export default class Area extends React.Component {
             x: xOptions[3],
             y: 0,
             r: rOptions[4],
+            hits: [
+                {x: 1, y: 1, r: 2, doesHit: true},
+                {x: 0, y: 0, r: 2, doesHit: true},
+                {x: -1, y: -0.5, r: 2, doesHit: false},
+                {x: 0, y: 0, r: 1.5, doesHit: true},
+            ],
+            validation: null,
+            isLoading: false,
         }
     }
 
@@ -33,12 +49,56 @@ export default class Area extends React.Component {
         this.setState({x})
     }
 
-    handleChangeY = (y) => {
-        this.setState({y})
+    handleChangeY = (event) => {
+        this.setState({y: event.target.value})
     }
 
     handleChangeR = (event, r) => {
+        if (this.fieldValidationMessage('r') != null) {
+            this.setState({ validation: null })
+        }
         this.setState({r})
+    }
+
+    addPoint = () => {
+        let x = this.state.x.id;
+        let y = this.state.y.id;
+        let r = this.state.r.id;
+
+        this.setState({
+            isLoading: true,
+        })
+        addHit(x, y, r).then(response => {
+            if (response.code === 400) {
+                this.setState({
+                    validation: response.body,
+                })
+
+            } else if (response.code === 200) {
+                this.setState(prevState => ({
+                    hits: prevState.hits.concat({x, y, r, doesHit: response.body.doesHit})
+                }))
+            } else {
+                console.error("unknown response code: " + response.code)
+            }
+        }).finally(() => {
+            this.setState({
+                isLoading: false,
+            })
+        })
+    }
+
+    fieldValidationMessage(field) {
+        let validation = this.state.validation
+        if (validation == null) {
+            return null
+        }
+
+        if (validation.field !== field) {
+            return null
+        }
+
+        return validation.message
     }
 
     render() {
@@ -47,6 +107,7 @@ export default class Area extends React.Component {
                 <canvas id="area" />
                     <Autocomplete
                         disablePortal
+                        disableClearable
                         options={xOptions}
                         value={this.state.x}
                         onChange={this.handleChangeX}
@@ -64,13 +125,31 @@ export default class Area extends React.Component {
 
                     <Autocomplete
                         disablePortal
+                        disableClearable
                         options={rOptions}
                         sx={{ width: 300, marginBottom: 2 }}
                         value={this.state.r}
                         onChange={this.handleChangeR}
-                        renderInput={(params) => <TextField label="Radius" {...params} />}
+                        renderInput={(params) => {
+                            let validationMessage = this.fieldValidationMessage('r')
+
+                            return (
+                                <TextField
+                                    label={validationMessage || "Radius"}
+                                    error={validationMessage !== null}
+                                    {...params}
+                                />
+                            );
+                        }}
                     />
-                    <Button variant="outlined">Add point</Button>
+                    <Button
+                        variant="outlined"
+                        onClick={this.addPoint}
+                        startIcon={this.state.isLoading ? <CircularProgress size={12} /> : null}
+                        disabled={this.state.isLoading}
+                    >
+                        Add point
+                    </Button>
 
                 <button style={{margin: '16px 0', display: 'block'}} onClick={this.props.goToMainPage}>Go to main page</button>
 
@@ -84,7 +163,7 @@ export default class Area extends React.Component {
                     </tr>
                     </thead>
                     <tbody>
-                    {hits.map((hit, i) => (
+                    {this.state.hits.map((hit, i) => (
                         <tr key={i}>
                             <td>{hit.x}</td>
                             <td>{hit.y}</td>
