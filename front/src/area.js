@@ -1,9 +1,6 @@
 import './area.css';
 import React from 'react';
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
+import { Autocomplete, TextField, Button, CircularProgress } from '@mui/material';
 
 function addHit(x, y, r) {
     return new Promise(resolve => {
@@ -151,7 +148,7 @@ export default class Area extends React.Component {
                         Add point
                     </Button>
 
-                <button style={{margin: '16px 0', display: 'block'}} onClick={this.props.goToMainPage}>Go to main page</button>
+                <Button variant="outlined" color="error" onClick={this.props.logout}>Log out</Button>
 
                 <table className="hits">
                     <thead>

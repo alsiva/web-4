@@ -15,14 +15,10 @@ export default class App extends React.Component {
     render() {
         return (
             <div className="App">
-                <header className="App-header">
-
-
-                </header>
                 <main>
                     {this.state.loggedIn
                         ? <Area goToMainPage={() => this.setState({ loggedIn: false })}/>
-                        : <Login goToCheckAreaPage={() => this.setState({ loggedIn: true })}/>
+                        : <Login logout={() => this.setState({ loggedIn: true })}/>
                     }
                 </main>
             </div>
