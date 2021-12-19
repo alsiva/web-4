@@ -1,6 +1,5 @@
 import './area.css';
 import React from 'react';
-import { Autocomplete } from 'react-toolbox/lib/autocomplete';
 
 const hits = [
     {x: 1, y: 1, r: 2, doesHit: true},
@@ -32,7 +31,7 @@ export default class Area extends React.Component {
 
                     <label>
                         x
-                        <Autocomplete
+                        {/*<Autocomplete
                             direction="down"
                             label="Choose x"
                             hint="You can only choose one..."
@@ -40,7 +39,7 @@ export default class Area extends React.Component {
                             onChange={this.handleChangeX}
                             source={xOptions}
                             value={this.state.x}
-                        />
+                        />*/}
                     </label>
 
                     <label>
