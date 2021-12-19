@@ -16,13 +16,15 @@ export default class App extends React.Component {
         return (
             <div className="App">
                 <header className="App-header">
-                    {
-                        this.state.page === 'main'
-                            ? <Main goToCheckAreaPage={() => this.setState({ page: 'checkArea' })}/>
-                            : <CheckArea goToMainPage={() => this.setState({ page: 'main' })}/>
-                    }
+
 
                 </header>
+                <main>
+                    {this.state.page === 'main'
+                        ? <Main goToCheckAreaPage={() => this.setState({ page: 'checkArea' })}/>
+                        : <CheckArea goToMainPage={() => this.setState({ page: 'main' })}/>
+                    }
+                </main>
             </div>
         );
     }
