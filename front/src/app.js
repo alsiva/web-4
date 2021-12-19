@@ -2,26 +2,39 @@ import './app.css';
 import Login from "./login";
 import Area from "./area";
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux'
 
-export default class App extends React.Component {
-    constructor(props) {
-        super(props);
+export const LOGIN_REQUESTED_ACTION = 'LOGIN_REQUESTED_ACTION'
+export const LOGIN_FINISHED_ACTION = 'LOGIN_FINISHED_ACTION'
+export const LOGOUT_ACTION = 'LOGOUT_ACTION'
 
-        this.state = {
-            loggedIn: false
-        }
+export function loginReducer(state, action) {
+    if (typeof state === 'undefined') {
+        return false
     }
 
-    render() {
-        return (
-            <div className="App">
-                <main>
-                    {this.state.loggedIn
-                        ? <Area goToMainPage={() => this.setState({ loggedIn: false })}/>
-                        : <Login logout={() => this.setState({ loggedIn: true })}/>
-                    }
-                </main>
-            </div>
-        );
+    switch (action.type) {
+        case LOGIN_FINISHED_ACTION:
+            if (action.success) {
+                return true
+            }
+            break
+        case LOGOUT_ACTION:
+            return false
     }
+
+    return state;
+}
+
+
+export default function App() {
+    const loggedIn = useSelector(state => state.isLoggedIn )
+
+    return (
+        <div className="App">
+            <main>
+                {loggedIn ? <Area /> : <Login/>}
+            </main>
+        </div>
+    );
 }
