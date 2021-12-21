@@ -4,6 +4,7 @@ import {Autocomplete, Button, CircularProgress, TextField} from '@mui/material';
 import {combineReducers} from "redux";
 import {useDispatch, useSelector} from "react-redux";
 import {LOGOUT_ACTION} from "./app";
+import {Chart} from "./chart";
 
 function fakeAddHit(x, y, r) {
     return new Promise(resolve => {
@@ -214,7 +215,7 @@ export default function Area() {
 
     return (
         <div>
-            <canvas id="area" />
+            <Chart />
             <Autocomplete
                 disablePortal
                 disableClearable
