@@ -178,28 +178,27 @@ export const areaReducer = combineReducers({
     isLoading: isLoadingReducer,
 })
 
+export function loadPoint(dispatch, x, y, r) {
+    dispatch({type: ADD_HIT_REQUESTED })
+
+    fakeAddHit(x, y, r).then(response => {
+        if (response.code === 400) {
+            dispatch({type: ADD_HIT_FINISHED, success: false, error: response.error})
+        } else if (response.code === 200) {
+            const hit = {x, y, r, doesHit: response.body.doesHit}
+            dispatch({type: ADD_HIT_FINISHED, success: true, hit })
+        } else {
+            dispatch({type: ADD_HIT_FINISHED, success: false, error: {}})
+        }
+    }).catch(() => {
+        dispatch({type: ADD_HIT_FINISHED, success: false, error: {}})
+    })
+}
+
 export default function Area() {
     const {isLoading, hits, form: {x, y, r}} = useSelector(state => state.area);
 
     const dispatch = useDispatch()
-
-    const addPoint = () => {
-        dispatch({type: ADD_HIT_REQUESTED})
-
-        fakeAddHit(x.value, y.value, r.value).then(response => {
-            if (response.code === 400) {
-                dispatch({type: ADD_HIT_FINISHED, success: false, error: response.error})
-            } else if (response.code === 200) {
-                const hit = {x: x.value, y: y.value, r: r.value, doesHit: response.body.doesHit}
-                dispatch({type: ADD_HIT_FINISHED, success: true, hit})
-            } else {
-                dispatch({type: ADD_HIT_FINISHED, success: false, error: {}})
-            }
-        }).catch(() => {
-            dispatch({type: ADD_HIT_FINISHED, success: false, error: {}})
-        })
-    }
-
 
     function handleChangeX(event, x) {
         dispatch({type: X_CHANGED, x})
@@ -254,7 +253,9 @@ export default function Area() {
             />
             <Button
                 variant="outlined"
-                onClick={addPoint}
+                onClick={() => {
+                    loadPoint(dispatch, x.value, y.value, r.value)
+                }}
                 startIcon={isLoading ? <CircularProgress size={12} /> : null}
                 disabled={isLoading}
             >
