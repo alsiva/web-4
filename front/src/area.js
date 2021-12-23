@@ -3,7 +3,7 @@ import React from 'react';
 import {Autocomplete, Button, CircularProgress, TextField} from '@mui/material';
 import {combineReducers} from "redux";
 import {useDispatch, useSelector} from "react-redux";
-import {LOGOUT_ACTION} from "./app";
+import {LOGIN_FINISHED_ACTION, LOGOUT_ACTION} from "./app";
 import {Chart} from "./chart";
 
 function fakeAddHit(x, y, r) {
@@ -137,15 +137,15 @@ const ADD_HIT_FINISHED = 'ADD_HIT_FINISHED';
 
 function hitsReducer(state, action) {
     if (typeof state === 'undefined') {
-        return [
-            {x: 1, y: 1, r: 2, doesHit: true},
-            {x: 0, y: 0, r: 2, doesHit: true},
-            {x: -1, y: -0.5, r: 2, doesHit: false},
-            {x: 0, y: 0, r: 1.5, doesHit: true},
-        ]
+        return []
     }
 
     switch (action.type) {
+        case LOGIN_FINISHED_ACTION:
+            if (action.success) {
+                return action.hits;
+            }
+            break;
         case ADD_HIT_FINISHED:
             if (!action.success) {
                 break;

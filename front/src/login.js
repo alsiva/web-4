@@ -5,20 +5,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {combineReducers} from "redux";
 import {LOGIN_REQUESTED_ACTION, LOGIN_FINISHED_ACTION} from "./app";
 
-function fakeLogin(user, password) {
-    return new Promise(resolve => {
-        function success() {
-            resolve({code: 200})
-        }
-
-        function failure() {
-            resolve({code: 400})
-        }
-
-        setTimeout(user === 'alex' ? success : failure, 1000)
-    })
-}
-
 const USERNAME_CHANGED_ACTION = 'USERNAME_CHANGED_ACTION'
 
 function usernameReducer(state, action) {
@@ -89,7 +75,7 @@ export const loginFormReducer = combineReducers({
     error: errorReducer,
 })
 
-export default function Login(props) {
+export default function Login() {
     const username = useSelector(state => state.loginForm.username)
     const password = useSelector(state => state.loginForm.password)
     const isLoading = useSelector(state => state.loginForm.isLoading)
@@ -98,9 +84,27 @@ export default function Login(props) {
 
     function login() {
         dispatch({ type: LOGIN_REQUESTED_ACTION })
-        fakeLogin(username, password).then(response => {
-            dispatch({ type: LOGIN_FINISHED_ACTION, success: response.code === 200})
+
+        let headers = new Headers();
+        headers.set('Authorization', 'Basic ' + btoa(username + ":" + password));
+        headers.set('X-Requested-With', 'XMLHttpRequest');
+
+        fetch('/hits', {
+            method: 'GET',
+            headers: headers,
         })
+            .then(response => {
+                if (response.code === 401) {
+                    throw new Error("wrong credentials")
+                }
+
+                return response.json();
+            })
+            .then(json => {
+                dispatch({ type: LOGIN_FINISHED_ACTION, success: true, hits: json })
+            }).catch(() => {
+                dispatch({ type: LOGIN_FINISHED_ACTION, success: false })
+            })
     }
 
     return (
