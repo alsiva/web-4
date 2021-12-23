@@ -89,29 +89,25 @@ export default function Login() {
     const error = useSelector(state => state.loginForm.error)
     const dispatch = useDispatch()
 
-    function login() {
+    async function login() {
         dispatch({ type: LOGIN_REQUESTED_ACTION })
 
-        let headers = new Headers();
-        headers.set('Authorization', 'Basic ' + btoa(username + ":" + password));
-        headers.set('X-Requested-With', 'XMLHttpRequest');
-
-        fetch('/hits', {
+        const response = await fetch('/hits', {
             method: 'GET',
-            headers: headers,
+            headers: {
+                'Authorization': 'Basic ' + btoa(username + ":" + password),
+                'X-Requested-With': 'XMLHttpRequest',
+            },
         })
-            .then(response => {
-                if (response.status === 401) {
-                    throw new Error("wrong credentials")
-                }
 
-                return response.json();
-            })
-            .then(json => {
-                dispatch({ type: LOGIN_FINISHED_ACTION, success: true, hits: json })
-            }).catch(() => {
-                dispatch({ type: LOGIN_FINISHED_ACTION, success: false })
-            })
+        if (response.status === 401) {
+            dispatch({ type: LOGIN_FINISHED_ACTION, success: false })
+            return;
+        }
+
+        const hits = await response.json()
+
+        dispatch({ type: LOGIN_FINISHED_ACTION, success: true, hits })
     }
 
     return (

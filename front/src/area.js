@@ -141,6 +141,7 @@ function isLoadingReducer(state, action) {
     switch (action.type) {
         case ADD_HIT_REQUESTED:
             return true
+        case LOGOUT_ACTION:
         case ADD_HIT_FINISHED:
             return false
     }
@@ -255,7 +256,18 @@ export default function Area() {
             <Button
                 variant="outlined"
                 color="error"
-                onClick={() => dispatch({type: LOGOUT_ACTION, initiatedByUser: true})}
+                onClick={async () => {
+                    const response = await fetch('/logout', {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                    })
+
+                    if (200 <= response.status && response.status < 300) {
+                        dispatch({type: LOGOUT_ACTION, initiatedByUser: true});
+                    }
+                }}
             >
                 Log out
             </Button>
