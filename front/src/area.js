@@ -6,30 +6,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {LOGIN_FINISHED_ACTION, LOGOUT_ACTION} from "./app";
 import {Chart} from "./chart";
 
-function fakeAddHit(x, y, r) {
-    return new Promise(resolve => {
-        function success() {
-            resolve({code: 200, body: {doesHit: true}})
-        }
-
-        const error = {}
-        if (r < 0) {
-            error['r'] = 'radius can\'t be negative'
-        }
-
-        let floatRegex = /^-?\d+(\.\d+)?$/
-        if (!floatRegex.test(y)) {
-            error['y'] = 'y should be a number'
-        }
-
-        function failure() {
-            resolve({code: 400, error})
-        }
-
-        setTimeout(Object.keys(error).length > 0 ? failure : success, 1000)
-    })
-}
-
 const xOptions = [-3, -2, -1, 0, 1, 2, 3, 4, 5]
 
 function xReducer(state, action) {
@@ -178,21 +154,35 @@ export const areaReducer = combineReducers({
     isLoading: isLoadingReducer,
 })
 
-export function loadPoint(dispatch, x, y, r) {
-    dispatch({type: ADD_HIT_REQUESTED })
+export async function loadPoint(dispatch, x, y, r) {
+    dispatch({type: ADD_HIT_REQUESTED})
 
-    fakeAddHit(x, y, r).then(response => {
-        if (response.code === 400) {
-            dispatch({type: ADD_HIT_FINISHED, success: false, error: response.error})
-        } else if (response.code === 200) {
-            const hit = {x, y, r, doesHit: response.body.doesHit}
-            dispatch({type: ADD_HIT_FINISHED, success: true, hit })
-        } else {
-            dispatch({type: ADD_HIT_FINISHED, success: false, error: {}})
+    const response = await fetch(
+        '/hits',
+        {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: JSON.stringify({x, y, r}),
+            credentials: 'same-origin' // include session id
         }
-    }).catch(() => {
-        dispatch({type: ADD_HIT_FINISHED, success: false, error: {}})
-    })
+    )
+
+    if (response.status === 401) {
+        dispatch({type: LOGOUT_ACTION, initiatedByUser: false})
+        return;
+    }
+
+    const json = await response.json()
+    if (response.status === 400) {
+        dispatch({type: ADD_HIT_FINISHED, success: false, error: json})
+        return
+    }
+
+    dispatch({type: ADD_HIT_FINISHED, success: true, hit: json })
 }
 
 export default function Area() {
@@ -262,7 +252,13 @@ export default function Area() {
                 Add point
             </Button>
 
-            <Button variant="outlined" color="error" onClick={() => dispatch({type: LOGOUT_ACTION})}>Log out</Button>
+            <Button
+                variant="outlined"
+                color="error"
+                onClick={() => dispatch({type: LOGOUT_ACTION, initiatedByUser: true})}
+            >
+                Log out
+            </Button>
 
             <table className="hits">
                 <thead>

@@ -17,9 +17,6 @@ class LoadDatabase {
             log.info("Preloading " + userRepository.save(new User("alex", passwordEncoder.encode("alex"))));
 
             log.info("Preloading " + hitRepository.save(new HitResult(0, 0, 1, true)));
-            log.info("Preloading " + hitRepository.save(new HitResult(1, 1, 1, true)));
-            log.info("Preloading " + hitRepository.save(new HitResult(-1, 0, 2, true)));
-            log.info("Preloading " + hitRepository.save(new HitResult(-1, 1, 2, false)));
         };
     }
 }

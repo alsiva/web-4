@@ -3,7 +3,7 @@ import './login.css'
 import {TextField, Button, Alert, CircularProgress} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {combineReducers} from "redux";
-import {LOGIN_REQUESTED_ACTION, LOGIN_FINISHED_ACTION} from "./app";
+import {LOGIN_REQUESTED_ACTION, LOGIN_FINISHED_ACTION, LOGOUT_ACTION} from "./app";
 
 const USERNAME_CHANGED_ACTION = 'USERNAME_CHANGED_ACTION'
 
@@ -52,17 +52,24 @@ function isLoadingReducer(state, action) {
 
 function errorReducer(state, action) {
     if (typeof state === 'undefined') {
-        return false
+        return ""
     }
 
     switch (action.type) {
         case USERNAME_CHANGED_ACTION:
         case PASSWORD_CHANGED_ACTION:
-            return false;
+            return "";
 
+        case LOGOUT_ACTION:
+            if (!action.initiatedByUser) {
+                return "session expired"
+            }
+            break;
         case LOGIN_FINISHED_ACTION:
-            return !action.success;
-
+            if (!action.success) {
+                return "Wrong credentials"
+            }
+            break;
     }
 
     return state;
@@ -94,7 +101,7 @@ export default function Login() {
             headers: headers,
         })
             .then(response => {
-                if (response.code === 401) {
+                if (response.status === 401) {
                     throw new Error("wrong credentials")
                 }
 
@@ -149,7 +156,7 @@ export default function Login() {
             </Button>
 
             {error && (
-                <Alert severity="error">Wrong credentials</Alert>
+                <Alert severity="error">{error}</Alert>
             )}
         </header>
     );
