@@ -46,15 +46,14 @@ public class HitAttempt {
     }
 
     private static boolean doesItHit(double x, double y, double r) {
-        if (-r <= x && x <= 0 && 0 <= y && y <= (x + r) / 2) {
+        if (0 <= x && x <= r/2 && -r <= y && y <= 0) {
             return true;
         }
 
-        if (Math.pow(x, 2) + Math.pow(y, 2) <= Math.pow(r, 2) && x >= 0 && y >= 0) {
+        if (y <= 0 && y >= -x-r && -r <= x && x <= 0) {
             return true;
         }
 
-        return 0 <= x && x <= r && -r / 2 <= y && y <= 0;
+        return Math.pow(x, 2) + Math.pow(y, 2) <= Math.pow(r / 2, 2) && x <= 0 && y >= 0;
     }
-
 }
