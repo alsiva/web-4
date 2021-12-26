@@ -5,7 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class User {
+public class AppUser {
     @Id
     @GeneratedValue
     private Long Id;
@@ -13,12 +13,12 @@ public class User {
     private String name;
     private String password;
 
-    public User(String name, String password) {
+    public AppUser(String name, String password) {
         this.name = name;
         this.password = password;
     }
 
-    protected User() {}
+    protected AppUser() {}
 
     public String getName() {
         return name;

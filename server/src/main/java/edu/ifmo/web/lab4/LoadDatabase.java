@@ -12,11 +12,10 @@ class LoadDatabase {
     private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
 
     @Bean
-    CommandLineRunner initDatabase(HitRepository hitRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    CommandLineRunner initDatabase(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
-            log.info("Preloading " + userRepository.save(new User("alex", passwordEncoder.encode("alex"))));
-
-            log.info("Preloading " + hitRepository.save(new HitResult(0, 0, 1, true)));
+            String encodedPassword = passwordEncoder.encode("alex");
+            log.info("Preloading " + userRepository.save(new AppUser("alex", encodedPassword)));
         };
     }
 }
