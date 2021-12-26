@@ -14,8 +14,15 @@ class LoadDatabase {
     @Bean
     CommandLineRunner initDatabase(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
-            String encodedPassword = passwordEncoder.encode("alex");
-            log.info("Preloading " + userRepository.save(new AppUser("alex", encodedPassword)));
+            String username = "alex";
+
+            User user = userRepository.findUserByName(username);
+            if (user == null) {
+                String encodedPassword = passwordEncoder.encode("alex");
+                log.info("Preloading " + userRepository.save(new User(username, encodedPassword)));
+            } else {
+                log.info("User " + username + " already exists");
+            }
         };
     }
 }
