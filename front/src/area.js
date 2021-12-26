@@ -1,6 +1,6 @@
 import './area.css';
 import React from 'react';
-import {Autocomplete, Button, CircularProgress, TextField} from '@mui/material';
+import {Autocomplete, Button, CircularProgress, Stack, TextField} from '@mui/material';
 import {combineReducers} from "redux";
 import {useDispatch, useSelector} from "react-redux";
 import {LOGIN_FINISHED_ACTION, LOGOUT_ACTION} from "./app";
@@ -204,73 +204,77 @@ export default function Area() {
     }
 
     return (
-        <div>
+        <div className="container">
             <Chart />
-            <Autocomplete
-                disablePortal
-                disableClearable
-                options={xOptions}
-                getOptionLabel={val => val.toString()}
-                value={x.value}
-                onChange={handleChangeX}
-                sx={{width: 300, marginBottom: 2}}
-                renderInput={(params) => <TextField label="X" {...params} />}
-            />
+            <div className="form">
+                <Autocomplete
+                    disablePortal
+                    disableClearable
+                    options={xOptions}
+                    getOptionLabel={val => val.toString()}
+                    value={x.value}
+                    onChange={handleChangeX}
+                    sx={{width: 300, marginBottom: 2}}
+                    renderInput={(params) => <TextField label="X" {...params} />}
+                />
 
-            <TextField
-                sx={{width: 300, marginBottom: 2}}
-                variant="outlined"
-                value={y.value}
-                label={y.validationMessage || "Y"}
-                error={y.validationMessage !== null}
-                onChange={handleChangeY}
-            />
+                <TextField
+                    sx={{width: 300, marginBottom: 2}}
+                    variant="outlined"
+                    value={y.value}
+                    label={y.validationMessage || "Y"}
+                    error={y.validationMessage !== null}
+                    onChange={handleChangeY}
+                />
 
-            <Autocomplete
-                disablePortal
-                disableClearable
-                options={rOptions}
-                getOptionLabel={val => val.toString()}
-                sx={{width: 300, marginBottom: 2}}
-                value={r.value}
-                onChange={handleChangeR}
-                renderInput={(params) => (
-                    <TextField
-                        label={r.validationMessage || "Radius"}
-                        error={r.validationMessage !== null}
-                        {...params}
-                    />
-                )}
-            />
-            <Button
-                variant="outlined"
-                onClick={() => {
-                    loadPoint(dispatch, x.value, y.value, r.value)
-                }}
-                startIcon={isLoading ? <CircularProgress size={12} /> : null}
-                disabled={isLoading}
-            >
-                Add point
-            </Button>
+                <Autocomplete
+                    disablePortal
+                    disableClearable
+                    options={rOptions}
+                    getOptionLabel={val => val.toString()}
+                    sx={{width: 300, marginBottom: 2}}
+                    value={r.value}
+                    onChange={handleChangeR}
+                    renderInput={(params) => (
+                        <TextField
+                            label={r.validationMessage || "Radius"}
+                            error={r.validationMessage !== null}
+                            {...params}
+                        />
+                    )}
+                />
+                <Stack direction="row" spacing={2}>
+                    <Button
+                        variant="outlined"
+                        onClick={() => {
+                            loadPoint(dispatch, x.value, y.value, r.value)
+                        }}
+                        startIcon={isLoading ? <CircularProgress size={12} /> : null}
+                        disabled={isLoading}
+                    >
+                        Add point
+                    </Button>
 
-            <Button
-                variant="outlined"
-                color="error"
-                onClick={async () => {
-                    const response = await fetch('/logout', {
-                        method: 'POST',
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                        },
-                    })
+                    <Button
+                        variant="outlined"
+                        color="error"
+                        onClick={async () => {
+                            const response = await fetch('/logout', {
+                                method: 'POST',
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                },
+                            })
 
-                    if (200 <= response.status && response.status < 300) {
-                        dispatch({type: LOGOUT_ACTION, initiatedByUser: true});
-                    }
-                }}
-            >
-                Log out
-            </Button>
+                            if (200 <= response.status && response.status < 300) {
+                                dispatch({type: LOGOUT_ACTION, initiatedByUser: true});
+                            }
+                        }}
+                    >
+                        Log out
+                    </Button>
+                </Stack>
+            </div>
 
             <table className="hits">
                 <thead>

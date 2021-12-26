@@ -112,48 +112,52 @@ export default function Login() {
 
     return (
         <header>
-            <h1>Лабораторная работа №4</h1>
-            <ul>
-                <li>Студент: <span className="author-name">Иванов Алексей Анатольевич</span></li>
-                <li>Группа: <span className="cursive">P3211</span></li>
-                <li>Вариант: 12086</li>
-            </ul>
+            <div className="about">
+                <h1>Лабораторная работа №4</h1>
+                <ul>
+                    <li>Студент: <span className="author-name">Иванов Алексей Анатольевич</span></li>
+                    <li>Группа: <span className="cursive">P3211</span></li>
+                    <li>Вариант: 12086</li>
+                </ul>
+            </div>
 
-            <TextField
-                label="User"
-                variant="outlined"
-                value={username}
-                onChange={(e) => {
-                    dispatch({
-                        type: USERNAME_CHANGED_ACTION,
-                        username: e.target.value,
-                    })
-                }}
-            />
-            <TextField
-                label="Password"
-                variant="outlined"
-                type="password"
-                value={password}
-                onChange={(e) => {
-                    dispatch({
-                        type: PASSWORD_CHANGED_ACTION,
-                        password: e.target.value,
-                    })
-                }}
-            />
-            <Button
-                variant="outlined"
-                onClick={login}
-                startIcon={isLoading ? <CircularProgress size={12} /> : null}
-                disabled={isLoading}
-            >
-                Login
-            </Button>
+            <div className="login-form">
+                <TextField
+                    label="User"
+                    variant="outlined"
+                    value={username}
+                    onChange={(e) => {
+                        dispatch({
+                            type: USERNAME_CHANGED_ACTION,
+                            username: e.target.value,
+                        })
+                    }}
+                />
+                <TextField
+                    label="Password"
+                    variant="outlined"
+                    type="password"
+                    value={password}
+                    onChange={(e) => {
+                        dispatch({
+                            type: PASSWORD_CHANGED_ACTION,
+                            password: e.target.value,
+                        })
+                    }}
+                />
+                <Button
+                    variant="outlined"
+                    onClick={login}
+                    startIcon={isLoading ? <CircularProgress size={12} /> : null}
+                    disabled={isLoading}
+                >
+                    Login
+                </Button>
 
-            {error && (
-                <Alert severity="error">{error}</Alert>
-            )}
+                {error && (
+                    <Alert severity="error">{error}</Alert>
+                )}
+            </div>
         </header>
     );
 }

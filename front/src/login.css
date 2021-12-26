@@ -18,3 +18,26 @@ header ul > li {
 header .cursive {
     font-style: italic;
 }
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+@media (min-width: 694px) {
+    .about {
+        display: inline-block;
+    }
+    .login-form {
+        vertical-align: top;
+        margin: 32px 32px;
+        display: inline-flex;
+    }
+}
+
+@media (min-width: 1193px) {
+    .login-form {
+        flex-direction: row;
+    }
+}
