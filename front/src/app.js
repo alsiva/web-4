@@ -1,8 +1,7 @@
-import './app.css';
 import Login from "./login";
 import Area from "./area";
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 export const LOGIN_REQUESTED_ACTION = 'LOGIN_REQUESTED_ACTION'
 export const LOGIN_FINISHED_ACTION = 'LOGIN_FINISHED_ACTION'

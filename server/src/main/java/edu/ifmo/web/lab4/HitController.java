@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-// todo: add @CrossOrigin(origins = "http://localhost:8080")
 @RestController
 class HitController {
     private final HitRepository repository;

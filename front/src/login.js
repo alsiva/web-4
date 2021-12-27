@@ -66,10 +66,11 @@ function errorReducer(state, action) {
             }
             break;
         case LOGIN_FINISHED_ACTION:
-            if (!action.success) {
+            if (action.success) {
+                return "";
+            } else {
                 return "Wrong credentials"
             }
-            break;
     }
 
     return state;

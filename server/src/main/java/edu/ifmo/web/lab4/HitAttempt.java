@@ -1,10 +1,6 @@
 package edu.ifmo.web.lab4;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.springframework.format.annotation.NumberFormat;
-
 import javax.validation.constraints.*;
-
 
 public class HitAttempt {
     private static final String MISSING_FIELD_MESSAGE = "value is missing";

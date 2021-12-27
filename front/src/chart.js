@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useRef} from "react";
-import {loadPoint} from "./area";
+import {addPoint} from "./area";
 
 const chartRadius = 140;
 const size = 400
@@ -44,7 +44,7 @@ export function Chart() {
                 let x = getChartCoordinate(transformedPt.x)
                 let y = getChartCoordinate(transformedPt.y)
 
-                loadPoint(dispatch, x, y, r)
+                addPoint(dispatch, x, y, r)
             }}
             transform="scale(1, -1)"
         >
@@ -89,6 +89,7 @@ export function Chart() {
 
                 return (
                     <circle
+                        key={hit.id}
                         cx={hit.x * ratio}
                         cy={hit.y * ratio}
                         r="5"

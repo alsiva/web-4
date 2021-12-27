@@ -155,7 +155,7 @@ export const areaReducer = combineReducers({
     isLoading: isLoadingReducer,
 })
 
-export async function loadPoint(dispatch, x, y, r) {
+export async function addPoint(dispatch, x, y, r) {
     dispatch({type: ADD_HIT_REQUESTED})
 
     const response = await fetch(
@@ -247,7 +247,7 @@ export default function Area() {
                     <Button
                         variant="outlined"
                         onClick={() => {
-                            loadPoint(dispatch, x.value, y.value, r.value)
+                            addPoint(dispatch, x.value, y.value, r.value)
                         }}
                         startIcon={isLoading ? <CircularProgress size={12} /> : null}
                         disabled={isLoading}
@@ -286,8 +286,8 @@ export default function Area() {
                 </tr>
                 </thead>
                 <tbody>
-                {hits.map((hit, i) => (
-                    <tr key={i}>
+                {hits.map(hit => (
+                    <tr key={hit.id}>
                         <td>{hit.x}</td>
                         <td>{hit.y}</td>
                         <td>{hit.r}</td>
