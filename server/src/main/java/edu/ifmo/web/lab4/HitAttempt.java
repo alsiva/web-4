@@ -6,9 +6,6 @@ public class HitAttempt {
     private static final String MISSING_FIELD_MESSAGE = "value is missing";
     private static final String REGEX_DOUBLE = "^-?\\d+(\\.\\d+)?$";
 
-    private static final String X_ERROR_MESSAGE = "x should be between -3 and 5";
-    @Min(value = -3, message = X_ERROR_MESSAGE)
-    @Max(value = 5, message = X_ERROR_MESSAGE)
     @NotNull(message = MISSING_FIELD_MESSAGE)
     private final Double x;
 
@@ -16,7 +13,7 @@ public class HitAttempt {
     @Pattern(regexp = REGEX_DOUBLE, message = "must be a number")
     private final String y;
 
-    //@PositiveOrZero(message = "radius can't be negative")
+    @PositiveOrZero(message = "radius can't be negative")
     @NotNull(message = MISSING_FIELD_MESSAGE)
     private final Double r;
 
