@@ -3,7 +3,36 @@ import './login.css'
 import {TextField, Button, Alert, CircularProgress} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {combineReducers} from "redux";
-import {LOGIN_REQUESTED_ACTION, LOGIN_FINISHED_ACTION, LOGOUT_ACTION} from "./app";
+
+const LOGIN_REQUESTED_ACTION = 'LOGIN_REQUESTED_ACTION'
+export const LOGIN_FINISHED_ACTION = 'LOGIN_FINISHED_ACTION'
+export const LOGOUT_ACTION = 'LOGOUT_ACTION'
+
+const REGISTER_REQUESTED_ACTION = 'REGISTER_REQUESTED_ACTION';
+const REGISTER_FAILED_ACTION = 'REGISTER_FAILED_ACTION';
+
+export function isLoggedInReducer(state, action) {
+    if (typeof state === 'undefined') {
+        return false
+    }
+
+    switch (action.type) {
+        case LOGIN_FINISHED_ACTION:
+            if (action.success) {
+                return true
+            }
+            break
+        case REGISTER_REQUESTED_ACTION:
+            return true;
+        case REGISTER_FAILED_ACTION:
+            return false;
+        case LOGOUT_ACTION:
+            return false
+    }
+
+    return state;
+}
+
 
 const USERNAME_CHANGED_ACTION = 'USERNAME_CHANGED_ACTION'
 
@@ -60,6 +89,9 @@ function errorReducer(state, action) {
         case PASSWORD_CHANGED_ACTION:
             return "";
 
+        case REGISTER_FAILED_ACTION:
+            return action.error;
+
         case LOGOUT_ACTION:
             if (!action.initiatedByUser) {
                 return "session expired"
@@ -111,6 +143,33 @@ export default function Login() {
         dispatch({ type: LOGIN_FINISHED_ACTION, success: true, hits })
     }
 
+    async function register() {
+        const response = await fetch('/users', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: JSON.stringify({ name: username, password: password }),
+        })
+
+        if (response.status === 409) {
+            dispatch({ type: REGISTER_FAILED_ACTION, error: `user ${username} already exists`})
+            return
+        }
+
+        if (response.status === 400) {
+            const json = await response.json()
+            let error = Object.keys(json).map(key => `${key}: ${json[key]}`).join(', ');
+
+            dispatch({ type: REGISTER_FAILED_ACTION, error: error})
+            return
+        }
+
+        await login()
+    }
+
     return (
         <header>
             <div className="about">
@@ -153,6 +212,15 @@ export default function Login() {
                     disabled={isLoading}
                 >
                     Login
+                </Button>
+
+                <Button
+                    variant="outlined"
+                    onClick={register}
+                    startIcon={isLoading ? <CircularProgress size={12} /> : null}
+                    disabled={isLoading}
+                >
+                    Register
                 </Button>
 
                 {error && (

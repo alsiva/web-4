@@ -16,7 +16,7 @@ public class HitAttempt {
     @Pattern(regexp = REGEX_DOUBLE, message = "must be a number")
     private final String y;
 
-    @PositiveOrZero(message = "radius can't be negative")
+    //@PositiveOrZero(message = "radius can't be negative")
     @NotNull(message = MISSING_FIELD_MESSAGE)
     private final Double r;
 

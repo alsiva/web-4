@@ -1,11 +1,11 @@
 import { createStore, combineReducers } from 'redux'
-import {loginReducer} from "./app";
-import {loginFormReducer} from "./login";
+
+import {loginFormReducer, isLoggedInReducer} from "./login";
 import {areaReducer} from "./area";
 
 
 let reducer = combineReducers({
-    isLoggedIn: loginReducer,
+    isLoggedIn: isLoggedInReducer,
     loginForm: loginFormReducer,
     area: areaReducer,
 });

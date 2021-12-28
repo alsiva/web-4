@@ -3,7 +3,7 @@ import React from 'react';
 import {Autocomplete, Button, CircularProgress, Stack, TextField} from '@mui/material';
 import {combineReducers} from "redux";
 import {useDispatch, useSelector} from "react-redux";
-import {LOGIN_FINISHED_ACTION, LOGOUT_ACTION} from "./app";
+import {LOGIN_FINISHED_ACTION, LOGOUT_ACTION} from "./login";
 import {Chart} from "./chart";
 
 const xOptions = [-3, -2, -1, 0, 1, 2, 3, 4, 5]
@@ -168,7 +168,7 @@ export async function addPoint(dispatch, x, y, r) {
                 'X-Requested-With': 'XMLHttpRequest',
             },
             body: JSON.stringify({x, y, r}),
-            credentials: 'same-origin' // include session id
+            credentials: 'same-origin'
         }
     )
 

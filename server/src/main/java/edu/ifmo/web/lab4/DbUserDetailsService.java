@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Component
-public class DbUserDetailsService implements UserDetailsService{
+public class DbUserDetailsService implements UserDetailsService {
     private final UserRepository repository;
 
     public DbUserDetailsService(UserRepository repository) {
