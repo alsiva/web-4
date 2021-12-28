@@ -6,6 +6,7 @@ const size = 400
 const axisSize = 175
 const arrowLength = 15
 const arrowWidth = 8
+const serifSize = 8
 const scale = 30;
 
 function getChartCoordinate(value) {
@@ -49,6 +50,19 @@ export function Chart() {
             }}
             transform="scale(1, -1)"
         >
+            <g stroke="#bbb" strokeDasharray="6 5" strokeWidth="1">
+                <line x1={scaledRadius/2} x2={scaledRadius/2} y1={-axisSize} y2={axisSize - 5} />
+                <line x1={-scaledRadius} x2={-scaledRadius} y1={-axisSize} y2={axisSize - 5} />
+                <line x1={-axisSize} x2={axisSize - 5} y1={-scaledRadius} y2={-scaledRadius} />
+                <line x1={-axisSize} x2={axisSize - 5} y1={scaledRadius/2} y2={scaledRadius/2} />
+            </g>
+            <g transform="scale(1, -1)" fill="#666">
+                <text x={scaledRadius/2} y={-axisSize} textAnchor="middle">R/2</text>
+                <text x={-scaledRadius} y={-axisSize} textAnchor="middle">-R</text>
+                <text x={axisSize} y={scaledRadius} alignmentBaseline="middle">R</text>
+                <text x={axisSize} y={-scaledRadius/2} alignmentBaseline="middle">R/2</text>
+            </g>
+
             <g fill="#09b0e8">
                 <rect x="0" y={-scaledRadius} width={scaledRadius/2} height={scaledRadius}/>
                 <polygon points={`0,0 0,${-scaledRadius} -${scaledRadius},0`} />
@@ -58,6 +72,8 @@ export function Chart() {
 
             <line x1="0" x2="0" y1={-axisSize} y2={axisSize} stroke="black" strokeWidth="1"/>
             <line x1={-axisSize} x2={axisSize} y1="0" y2="0" stroke="black" strokeWidth="1"/>
+
+
 
             {[0, 270].map(angle => (
                 <polygon
@@ -74,10 +90,10 @@ export function Chart() {
                     return (
                         <g key={i}>
                             <text x="-10" y={scaledI} alignmentBaseline="middle" textAnchor="end">{-i}</text>
-                            <line x1="-5" x2="5" y1={scaledI} y2={scaledI} stroke="black" strokeWidth="1" />
+                            <line x1={-serifSize/2} x2={serifSize/2} y1={scaledI} y2={scaledI} stroke="black" strokeWidth="1" />
 
-                            <text x={scaledI + 4} y="-10" textAnchor="end">{i}</text>
-                            <line x1={scaledI} x2={scaledI} y1="-5" y2="5" stroke="black" strokeWidth="1" />
+                            <text x={scaledI + 4} y={-serifSize} textAnchor="end">{i}</text>
+                            <line x1={scaledI} x2={scaledI} y1={-serifSize/2} y2={serifSize/2} stroke="black" strokeWidth="1" />
                         </g>
                     );
                 })}

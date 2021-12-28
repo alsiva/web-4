@@ -59,7 +59,7 @@ const rOptions = [-3, -2, -1, 0, 1, 2, 3, 4, 5]
 
 function rReducer(state, action) {
     if (typeof state === 'undefined') {
-        return 1
+        return 5
     }
 
     switch (action.type) {
