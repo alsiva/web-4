@@ -22,10 +22,6 @@ export function isLoggedInReducer(state, action) {
                 return true
             }
             break
-        case REGISTER_REQUESTED_ACTION:
-            return true;
-        case REGISTER_FAILED_ACTION:
-            return false;
         case LOGOUT_ACTION:
             return false
     }
@@ -79,6 +75,22 @@ function isLoadingReducer(state, action) {
     return state;
 }
 
+function isRegisteringReducer(state, action) {
+    if (typeof state === 'undefined') {
+        return false
+    }
+
+    switch (action.type) {
+        case REGISTER_REQUESTED_ACTION:
+            return true
+        case REGISTER_FAILED_ACTION:
+        case LOGIN_REQUESTED_ACTION:
+            return false
+    }
+
+    return state;
+}
+
 function errorReducer(state, action) {
     if (typeof state === 'undefined') {
         return ""
@@ -112,6 +124,7 @@ export const loginFormReducer = combineReducers({
     username: usernameReducer,
     password: passwordReducer,
     isLoading: isLoadingReducer,
+    isRegistering: isRegisteringReducer,
     error: errorReducer,
 })
 
@@ -119,6 +132,7 @@ export default function Login() {
     const username = useSelector(state => state.loginForm.username)
     const password = useSelector(state => state.loginForm.password)
     const isLoading = useSelector(state => state.loginForm.isLoading)
+    const isRegistering = useSelector(state => state.loginForm.isRegistering)
     const error = useSelector(state => state.loginForm.error)
     const dispatch = useDispatch()
 
@@ -144,6 +158,7 @@ export default function Login() {
     }
 
     async function register() {
+        dispatch({type: REGISTER_REQUESTED_ACTION })
         const response = await fetch('/users', {
             method: 'POST',
             headers: {
@@ -217,8 +232,8 @@ export default function Login() {
                 <Button
                     variant="outlined"
                     onClick={register}
-                    startIcon={isLoading ? <CircularProgress size={12} /> : null}
-                    disabled={isLoading}
+                    startIcon={isRegistering ? <CircularProgress size={12} /> : null}
+                    disabled={isRegistering}
                 >
                     Register
                 </Button>

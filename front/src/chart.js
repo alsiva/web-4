@@ -103,7 +103,7 @@ export function Chart() {
                 })}
             </g>
 
-            {hits.map(hit => {
+            {hits.filter(hit => hit.r !== 0).map(hit => {
                 const ratio = scaledRadius / hit.r
 
                 return (
